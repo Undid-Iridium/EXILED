@@ -14,6 +14,8 @@ namespace Exiled.Events.Patches.Fixes
     using CustomPlayerEffects;
     using HarmonyLib;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
+    using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp106;
 
     using static HarmonyLib.AccessTools;
 
@@ -43,10 +45,10 @@ namespace Exiled.Events.Patches.Fixes
             {
                 // Scp106Role scp106Role = base.Hub.roleManager.CurrentRole as Scp106Role;
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(CustomPlayerEffects.StatusEffectBase), nameof(CustomPlayerEffects.StatusEffectBase.Hub))),
+                new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
                 new CodeInstruction(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.roleManager))),
-                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoles.PlayerRoleManager), nameof(PlayerRoles.PlayerRoleManager.CurrentRole))),
-                new CodeInstruction(OpCodes.Isinst, typeof(PlayerRoles.PlayableScps.Scp106.Scp106Role)),
+                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
+                new CodeInstruction(OpCodes.Isinst, typeof(Scp106Role)),
                 new CodeInstruction(OpCodes.Stloc_0),
 
                 // if (scp106Role is null) goto continueLabel
@@ -55,7 +57,7 @@ namespace Exiled.Events.Patches.Fixes
 
                 // if (!scp106Role.IsSubmerged) goto skip
                 new CodeInstruction(OpCodes.Ldloc_0),
-                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoles.PlayableScps.Scp106.Scp106Role), nameof(PlayerRoles.PlayableScps.Scp106.Scp106Role.IsSubmerged))),
+                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(Scp106Role), nameof(Scp106Role.IsSubmerged))),
                 new CodeInstruction(OpCodes.Brtrue_S, skip),
             });
 
