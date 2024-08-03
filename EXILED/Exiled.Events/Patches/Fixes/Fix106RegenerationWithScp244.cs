@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Fixes
             {
                 // Scp106Role scp106Role = base.Hub.roleManager.CurrentRole as Scp106Role;
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
+                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
                 new CodeInstruction(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.roleManager))),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
                 new CodeInstruction(OpCodes.Isinst, typeof(Scp106Role)),
