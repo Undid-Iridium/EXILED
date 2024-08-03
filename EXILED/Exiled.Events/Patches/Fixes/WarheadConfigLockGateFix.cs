@@ -33,7 +33,7 @@ namespace Exiled.Events.Patches.Fixes
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // replace Contains with StartWith
-            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(string), nameof(string.Contains)));
+            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(string), nameof(string.Contains), new[] { typeof(string) }));
             newInstructions[index].operand = Method(typeof(string), nameof(string.StartsWith), new System.Type[] { typeof(string) });
 
             for (int z = 0; z < newInstructions.Count; z++)

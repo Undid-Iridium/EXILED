@@ -12,6 +12,9 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
+    using Exiled.API.Features;
+
     using Footprinting;
     using HarmonyLib;
     using InventorySystem.Items.Pickups;
@@ -33,10 +36,15 @@ namespace Exiled.Events.Patches.Fixes
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(x => x.operand == (object)Field(typeof(Scp2176Projectile), nameof(Scp2176Projectile.OnServerShattered))) + offset;
+            Label cnt = generator.DefineLabel();
 
-            Label skip = (Label)newInstructions[index].operand;
+            int offset = 0;
+            int index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoomLightController), nameof(RoomLightController.Instances)))) + offset;
+
+            Label skip = newInstructions[index].labels[0];
+
+            offset = -3;
+            index += offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -44,16 +52,17 @@ namespace Exiled.Events.Patches.Fixes
                 new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Ldfld, Field(typeof(Scp2176Projectile), nameof(Scp2176Projectile.PreviousOwner))),
                 new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Role))),
-                new(OpCodes.Call, Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.GetTeam))),
+                new(OpCodes.Call, Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.GetTeam), new[] { typeof(RoleTypeId) })),
                 new(OpCodes.Ldc_I4_0),
                 new(OpCodes.Ceq),
-                new CodeInstruction(OpCodes.Brtrue_S, skip),
+
+                new(OpCodes.Brfalse_S, cnt),
+
+                new(OpCodes.Pop),
+                new(OpCodes.Br_S, skip),
+
+                new CodeInstruction(OpCodes.Nop).WithLabels(cnt),
             });
-
-            offset = 0;
-            index = newInstructions.FindIndex(x => x.operand == (object)Field(typeof(RoomLightController), nameof(RoomLightController.Instances))) + offset;
-
-            newInstructions[index].labels.Add(skip);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

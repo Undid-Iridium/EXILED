@@ -31,10 +31,12 @@ namespace Exiled.Events.Patches.Fixes
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            LocalBuilder scp106Role = generator.DeclareLocal(typeof(Scp106Role));
+            Label continueLabel = generator.DefineLabel();
+
             int offset = 1;
             int index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(SpawnProtected), nameof(SpawnProtected.CheckPlayer))) + offset;
 
-            Label continueLabel = generator.DefineLabel();
             Label skip = (Label)newInstructions[index].operand;
 
             index += offset;
@@ -49,14 +51,14 @@ namespace Exiled.Events.Patches.Fixes
                 new CodeInstruction(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.roleManager))),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
                 new CodeInstruction(OpCodes.Isinst, typeof(Scp106Role)),
-                new CodeInstruction(OpCodes.Stloc_0),
+                new CodeInstruction(OpCodes.Stloc_S, scp106Role.LocalIndex),
 
                 // if (scp106Role is null) goto continueLabel
-                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldloc_S, scp106Role.LocalIndex),
                 new CodeInstruction(OpCodes.Brfalse_S, continueLabel),
 
                 // if (!scp106Role.IsSubmerged) goto skip
-                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldloc_S, scp106Role.LocalIndex),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(Scp106Role), nameof(Scp106Role.IsSubmerged))),
                 new CodeInstruction(OpCodes.Brtrue_S, skip),
             });
