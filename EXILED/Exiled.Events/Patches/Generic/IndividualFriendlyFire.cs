@@ -261,7 +261,7 @@ namespace Exiled.Events.Patches.Generic
 
                     // AttackerDamageHandler.Damage = AttackerDamageHandler.Damage * ffMulti
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(uniqueFFMulti),
-                    new (OpCodes.Ldloc, ffMulti.LocalIndex),
+                    new(OpCodes.Ldloc, ffMulti.LocalIndex),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Damage))),
                     new(OpCodes.Mul),
