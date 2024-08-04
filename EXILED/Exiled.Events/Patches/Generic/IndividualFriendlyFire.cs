@@ -211,7 +211,7 @@ namespace Exiled.Events.Patches.Generic
 
             int offset = -1;
             int index = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Attacker)))) + offset;
+                instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.networkIdentity)))) + offset;
 
             LocalBuilder ffMulti = generator.DeclareLocal(typeof(float));
 
@@ -220,7 +220,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // Load Attacker (this.Attacker)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
@@ -254,14 +254,14 @@ namespace Exiled.Events.Patches.Generic
             // int ffMultiplierIndex = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ret) + ffMultiplierIndexOffset;
             newInstructions.InsertRange(
                 ffMultiplierIndex,
-                new CodeInstruction[]
+                new[]
                 {
                     // Do not run our custom logic, skip over.
                     new(OpCodes.Br, normalProcessing),
 
                     // AttackerDamageHandler.Damage = AttackerDamageHandler.Damage * ffMulti
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(uniqueFFMulti),
-                    new(OpCodes.Ldloc, ffMulti.LocalIndex),
+                    new (OpCodes.Ldloc, ffMulti.LocalIndex),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Damage))),
                     new(OpCodes.Mul),
