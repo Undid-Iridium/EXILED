@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Generic
 
             // Return false, no custom friendly fire allowed, default to NW logic for FF. No point in processing if FF is enabled across the board.
             if (Server.FriendlyFire)
-                return HitboxIdentity.IsDamageable(attackerFootprint.Hub, victimHub);
+                return HitboxIdentity.IsDamageable(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
 
             // Always allow damage from Server.Host
             if (attackerFootprint.Hub == Server.Host.ReferenceHub)
@@ -155,7 +155,7 @@ namespace Exiled.Events.Patches.Generic
             }
 
             // Default to NW logic
-            return HitboxIdentity.IsDamageable(attackerFootprint.Hub, victimHub);
+            return HitboxIdentity.IsDamageable(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
         }
     }
 
