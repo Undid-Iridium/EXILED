@@ -128,7 +128,7 @@ namespace Exiled.Events.Patches.Generic
 
                 // Check victim's UniqueRole for custom FF multiplier
                 if (!string.IsNullOrEmpty(victim.UniqueRole) &&
-                    victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out var victimPairedData) &&
+                    victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out Dictionary<RoleTypeId, float> victimPairedData) &&
                     victimPairedData.TryGetValue(attacker.Role, out ffMultiplier))
                 {
                     return true;
@@ -136,7 +136,7 @@ namespace Exiled.Events.Patches.Generic
 
                 // Check attacker's UniqueRole for custom FF multiplier
                 if (!string.IsNullOrEmpty(attacker.UniqueRole) &&
-                    attacker.CustomRoleFriendlyFireMultiplier.TryGetValue(attacker.UniqueRole, out var attackerPairedData) &&
+                    attacker.CustomRoleFriendlyFireMultiplier.TryGetValue(attacker.UniqueRole, out Dictionary<RoleTypeId, float> attackerPairedData) &&
                     attackerPairedData.TryGetValue(victim.Role, out ffMultiplier))
                 {
                     return true;
