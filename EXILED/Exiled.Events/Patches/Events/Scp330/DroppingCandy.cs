@@ -61,6 +61,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Dup),
                     new(OpCodes.Ldfld, Field(typeof(Scp330Bag), nameof(Scp330Bag.Candies))),
                     new(OpCodes.Ldarg_1),
+
                     // Grab candy ID from network message, and pass it to event args.
                     new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
                     new(OpCodes.Ldelem_U1),
@@ -94,7 +95,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // candyKindID = ev.Candy, save locally.
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingScp330EventArgs), nameof(DroppingScp330EventArgs.Candy))),
-                    new(OpCodes.Stloc, candyKindIdIndex)
+                    new(OpCodes.Stloc, candyKindIdIndex),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
