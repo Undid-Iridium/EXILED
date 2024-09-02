@@ -289,6 +289,10 @@ namespace Exiled.API.Extensions
                     isRisky = true;
 
                 writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
+                writer.WriteBool(true);
+                ushort value = 0;
+                writer.WriteRelativePosition(player.RelativePosition);
+                writer.WriteUShort(value);
             }
 
             foreach (Player target in playersToAffect)
