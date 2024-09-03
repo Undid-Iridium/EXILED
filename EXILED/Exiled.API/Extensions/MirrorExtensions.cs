@@ -270,7 +270,6 @@ namespace Exiled.API.Extensions
                 writer.WriteByte(unitId);
             }
 
-            
             if (roleBase is ZombieRole)
             {
                 if (player.Role.Base is not ZombieRole)
@@ -279,7 +278,7 @@ namespace Exiled.API.Extensions
                 writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
                 writer.WriteBool(true);
             }
-            
+
             if (roleBase is FpcStandardRoleBase fpc)
             {
                 if (player.Role.Base is not FpcStandardRoleBase playerfpc)
@@ -292,7 +291,6 @@ namespace Exiled.API.Extensions
                 writer.WriteRelativePosition(player.RelativePosition);
                 writer.WriteUShort(value);
             }
-
 
             foreach (Player target in playersToAffect)
             {
