@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             const int offset = -4;
             var scp173ExecuteEvent = typeof(EventManager)
-                .GetMethods(BindingFlags.Public | BindingFlags.Static) // Ensure the parameter type is IEventArguments
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .FirstOrDefault(m => m.Name == nameof(EventManager.ExecuteEvent)
                                      && !m.IsGenericMethod);
             int index = newInstructions.FindLastIndex(i => i.Calls(scp173ExecuteEvent)) + offset;
