@@ -5,12 +5,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using InventorySystem;
-
 namespace Exiled.Events.Patches.Events.Scp330
 {
 #pragma warning disable SA1402
 #pragma warning disable SA1313
+
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -20,6 +19,7 @@ namespace Exiled.Events.Patches.Events.Scp330
     using Exiled.Events.EventArgs.Scp330;
     using HarmonyLib;
     using Interactables.Interobjects;
+    using InventorySystem;
     using InventorySystem.Items.Usables.Scp330;
     using PluginAPI.Events;
 
