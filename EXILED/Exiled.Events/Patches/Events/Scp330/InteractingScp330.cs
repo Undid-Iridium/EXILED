@@ -70,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
                     // Scp330.OnInteractingScp330(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp330), nameof(Handlers.Scp330.OnInteractingScp330))),
-                    
+
                     // if (!ev.IsAllowed)
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.IsAllowed))),
@@ -78,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
                     // ldarg.1 to player
                     new(OpCodes.Ldarg_1),
-                    
+
                     // ev.Candy
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.Candy))),
@@ -90,10 +90,10 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new CodeInstruction(OpCodes.Call, Method(typeof(InteractingScp330), nameof(ServerProcessPickup), new[] { typeof(ReferenceHub), typeof(CandyKindID), typeof(Scp330Bag).MakeByRefType() })),
                 });
 
-            
             int remove_offset = -3;
             int remove_index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup)))) + remove_offset;
+
             // Remove original add candy logic
             newInstructions.RemoveRange(remove_index, 4);
 
@@ -103,11 +103,9 @@ namespace Exiled.Events.Patches.Events.Scp330
              * new:
              *   if (args.PlaySound || ev.PlaySound)
              */
-            
             offset = 1;
             index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.PlaySound)))) + offset;
-            
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -117,28 +115,27 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.ShouldPlaySound))),
                     new(OpCodes.Or),
                 });
-            
             /* next code will used to override Sever check by EXILED
              * old:
              *   if (args.AllowPunishment && uses >= 2)
              * new:
              *   if (args.AllowPunishment && ev.ShouldSever)
              */
-            
+
             // set `notSeverLabel`
             offset = -1;
             index = newInstructions.FindLastIndex(
                 instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + offset;
-            
+
             Label notSeverLabel = newInstructions[index].labels[0];
-            
+
             offset = 2;
             index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.AllowPunishment)))) + offset;
-            
+
             // remove `uses >= 2` check, to override that by ev.ShouldSever
             newInstructions.RemoveRange(index, 3);
-            
+
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -157,7 +154,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-        
+
         private static bool ServerProcessPickup(ReferenceHub player, CandyKindID candy, out Scp330Bag bag)
         {
             if (!Scp330Bag.TryGetBag(player, out bag))
@@ -181,7 +178,4 @@ namespace Exiled.Events.Patches.Events.Scp330
             return result;
         }
     }
-    
-    
-
 }
