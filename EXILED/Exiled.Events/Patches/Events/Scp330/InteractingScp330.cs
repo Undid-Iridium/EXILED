@@ -101,7 +101,7 @@ namespace Exiled.Events.Patches.Events.Scp330
              * old:
              *   if (args.PlaySound)
              * new:
-             *   if (args.PlaySound || ev.PlaySound)
+             *   if (args.PlaySound | ev.PlaySound)
              */
             offset = 1;
             index = newInstructions.FindLastIndex(
