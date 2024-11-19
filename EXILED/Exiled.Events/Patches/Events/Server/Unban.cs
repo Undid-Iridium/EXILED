@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using AccessTools = HarmonyLib.AccessTools;
-
 namespace Exiled.Events.Patches.Events.Server
 {
     using System.Collections.Generic;
@@ -17,7 +15,7 @@ namespace Exiled.Events.Patches.Events.Server
     using Exiled.Events.EventArgs.Server;
     using HarmonyLib;
 
-    using static AccessTools;
+    using static HarmonyLib.AccessTools;
 
     /// <summary>
     ///     Patches <see cref="BanHandler.RemoveBan" />
