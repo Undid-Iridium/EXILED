@@ -98,17 +98,17 @@ namespace Exiled.Events.Patches.Events.Server
             IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
         {
-            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            var ev = generator.DeclareLocal(typeof(UnbanningEventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(UnbanningEventArgs));
 
-            var continueLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             const int offset = 2;
-            var index = newInstructions.FindIndex(instruction =>
+            int index = newInstructions.FindIndex(instruction =>
                 instruction.Calls(Method(typeof(BanHandler), nameof(BanHandler.CheckExpiration)))) + offset;
 
-            var addToUnbannedListInstruction = newInstructions[index];
+            CodeInstruction addToUnbannedListInstruction = newInstructions[index];
             newInstructions.InsertRange(index, new[]
             {
                 // id
