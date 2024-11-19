@@ -5,15 +5,18 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using Exiled.API.Features.Pools;
-using Exiled.Events.Attributes;
-using Exiled.Events.EventArgs.Server;
-using HarmonyLib;
+using AccessTools = HarmonyLib.AccessTools;
 
 namespace Exiled.Events.Patches.Events.Server
 {
+    using System.Collections.Generic;
+    using System.Reflection.Emit;
+
+    using Exiled.API.Features.Pools;
+    using Exiled.Events.Attributes;
+    using Exiled.Events.EventArgs.Server;
+    using HarmonyLib;
+
     using static AccessTools;
 
     /// <summary>
@@ -26,7 +29,8 @@ namespace Exiled.Events.Patches.Events.Server
     internal class Unban
     {
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
+        private static IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
         {
             var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
@@ -65,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Server
                 // id = ev.TargetId;
                 new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(UnbanningEventArgs), nameof(UnbanningEventArgs.TargetId))),
-                new(OpCodes.Starg_S, 0)
+                new(OpCodes.Starg_S, 0),
             });
 
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
@@ -80,7 +84,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnbannedEventArgs))[0]),
 
                 // Handlers.Server.OnUnbanned(ev2);
-                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnUnbanned)))
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnUnbanned))),
             });
 
             for (var z = 0; z < newInstructions.Count; z++)
@@ -105,7 +109,6 @@ namespace Exiled.Events.Patches.Events.Server
             const int offset = 2;
             var index = newInstructions.FindIndex(instruction =>
                 instruction.Calls(Method(typeof(BanHandler), nameof(BanHandler.CheckExpiration)))) + offset;
-
 
             var addToUnbannedListInstruction = newInstructions[index];
             newInstructions.InsertRange(index, new[]
@@ -133,12 +136,11 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Callvirt, PropertyGetter(typeof(UnbanningEventArgs), nameof(UnbanningEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, continueLabel),
 
-                new(OpCodes.Ret)
+                new(OpCodes.Ret),
             });
 
             // Add label to ldloc.1
             addToUnbannedListInstruction.WithLabels(continueLabel);
-
 
             for (var z = 0; z < newInstructions.Count; z++)
             {
