@@ -65,6 +65,11 @@ namespace Exiled.Events.EventArgs.Scp330
         public bool ShouldPlaySound { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating the type of candy that will be received from this interaction.
+        /// </summary>
+        public CandyKindID Candy { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the player is allowed to interact with SCP-330.
         /// </summary>
         public bool IsAllowed { get; set; }
