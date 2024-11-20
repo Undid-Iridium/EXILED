@@ -21,11 +21,14 @@ namespace Exiled.Events.Patches.Events.Server
     ///     Patches <see cref="BanHandler.RemoveBan" />
     ///     to add <see cref="Handlers.Server.Unbanning" /> and <see cref="Handlers.Server.Unbanned" /> events.
     /// </summary>
-    [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.RemoveBan))]
+
+
     [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.Unbanning))]
     [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.Unbanned))]
+    [HarmonyPatch]
     internal class Unban
     {
+        [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.RemoveBan))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler(
             IEnumerable<CodeInstruction> instructions,
@@ -93,6 +96,7 @@ namespace Exiled.Events.Patches.Events.Server
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
+        [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.ValidateBans), typeof(BanHandler.BanType))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> BanHandlerTranspiler(
             IEnumerable<CodeInstruction> instructions,
@@ -112,7 +116,7 @@ namespace Exiled.Events.Patches.Events.Server
             newInstructions.InsertRange(index, new[]
             {
                 // id
-                new CodeInstruction(OpCodes.Ldarg, 4).MoveLabelsFrom(addToUnbannedListInstruction),
+                new CodeInstruction(OpCodes.Ldloc, 4).MoveLabelsFrom(addToUnbannedListInstruction),
 
                 // type
                 new(OpCodes.Ldarg_0),
@@ -123,6 +127,7 @@ namespace Exiled.Events.Patches.Events.Server
                 // UnbanningEventArgs ev = new(string, BanHandler.BanType, true);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnbanningEventArgs))[0]),
 
+                new(OpCodes.Dup),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, ev.LocalIndex),
 
