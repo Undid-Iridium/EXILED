@@ -40,9 +40,9 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
-            Label jump = generator.DefineLabel();
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            Label cntLabel = generator.DefineLabel();
+            int offset = -3;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(DamageHandlerBase), nameof(DamageHandlerBase.ApplyDamage)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -66,11 +66,15 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (!ev.IsAllowed)
                     //  return false;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(HurtingEventArgs), nameof(HurtingEventArgs.IsAllowed))),
-                    new(OpCodes.Brtrue, jump),
+                    new(OpCodes.Brtrue, cntLabel),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ret),
-                    new CodeInstruction(OpCodes.Nop).WithLabels(jump),
                 });
+            
+            int offset_cont = -3;
+            int offset_cont_index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(DamageHandlerBase), nameof(DamageHandlerBase.ApplyDamage)))) + offset_cont;
+
+            newInstructions[offset_cont_index].WithLabels(cntLabel);
 
             offset = 2;
             index = newInstructions.FindIndex(instruction => instruction.operand == (object)Method(typeof(DamageHandlerBase), nameof(DamageHandlerBase.ApplyDamage))) + offset;
