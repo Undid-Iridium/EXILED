@@ -21,8 +21,6 @@ namespace Exiled.Events.Patches.Events.Server
     ///     Patches <see cref="BanHandler.RemoveBan" />
     ///     to add <see cref="Handlers.Server.Unbanning" /> and <see cref="Handlers.Server.Unbanned" /> events.
     /// </summary>
-
-
     [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.Unbanning))]
     [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.Unbanned))]
     [HarmonyPatch]
@@ -34,11 +32,11 @@ namespace Exiled.Events.Patches.Events.Server
             IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
         {
-            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            var ev = generator.DeclareLocal(typeof(UnbanningEventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(UnbanningEventArgs));
 
-            var continueLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new[]
             {
