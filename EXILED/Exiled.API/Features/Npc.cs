@@ -131,8 +131,6 @@ namespace Exiled.API.Features
         /// <param name="conn">The NetworkConnection to retrieve the NPC for.</param>
         /// <returns>The NPC associated with the NetworkConnection, or <c>null</c> if not found.</returns>
         public static new Npc? Get(NetworkConnection conn) => Player.Get(conn) as Npc;
-        
-        
 
         /// <summary>
         /// Spawns an NPC based on the given parameters.
@@ -218,9 +216,17 @@ namespace Exiled.API.Features
         /// <param name="ignored">Whether the NPC should be ignored by round ending checks.</param>
         /// <param name="userId">The userID of the NPC for authentication. Defaults to the Dedicated ID.</param>
         /// <param name="position">The position where the NPC should spawn. If null, the default spawn location is used.</param>
+        /// <param name="playerHealth"> Set the NPC's new health. </param>
+        /// <param name="playerMaxHealth"> Set the NPC's new max health. </param>
         /// <returns>The <see cref="Npc"/> spawned.</returns>
-        public static Npc Spawn(string name, RoleTypeId role = RoleTypeId.None, bool ignored = false,
-            string userId = PlayerAuthenticationManager.DedicatedId, Vector3? position = null, float PlayerHealth = float.NegativeInfinity, float PlayerMaxHealth = float.NegativeInfinity)
+        public static Npc Spawn(
+            string name,
+            RoleTypeId role = RoleTypeId.None,
+            bool ignored = false,
+            string userId = PlayerAuthenticationManager.DedicatedId,
+            Vector3? position = null,
+            float playerHealth = float.NegativeInfinity,
+            float playerMaxHealth = float.NegativeInfinity)
         {
             GameObject newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
 
@@ -277,13 +283,14 @@ namespace Exiled.API.Features
                 if (position is not null)
                     npc.Position = position.Value;
 
-                if (PlayerMaxHealth != float.NegativeInfinity)
+                if (playerMaxHealth != float.NegativeInfinity)
                 {
-                    npc.MaxHealth = PlayerMaxHealth;
+                    npc.MaxHealth = playerMaxHealth;
                 }
-                if (PlayerHealth != float.NegativeInfinity)
+
+                if (playerHealth != float.NegativeInfinity)
                 {
-                    npc.Health = PlayerHealth;
+                    npc.Health = playerHealth;
                 }
             });
 
