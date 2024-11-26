@@ -19,16 +19,22 @@ namespace Exiled.Loader
 
     using API.Enums;
     using API.Interfaces;
+    
 
     using CommandSystem.Commands.Shared;
+
 
     using Exiled.API.Features;
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
+
+
     using MEC;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NodeDeserializers;
+
+    using EventInfo = System.Reflection.EventInfo;
 
     /// <summary>
     /// Used to handle plugins.
@@ -230,6 +236,8 @@ namespace Exiled.Loader
                     if (CheckPluginRequiredExiledVersion(plugin))
                         continue;
 
+                    // loadDelegateFunctions(plugin);
+
                     return plugin;
                 }
             }
@@ -249,6 +257,7 @@ namespace Exiled.Loader
 
             return null;
         }
+
 
         /// <summary>
         /// Enables all plugins.

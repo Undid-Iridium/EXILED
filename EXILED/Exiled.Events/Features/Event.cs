@@ -43,7 +43,7 @@ namespace Exiled.Events.Features
             EventsValue.Add(this);
         }
 
-        private event CustomEventHandler InnerEvent;
+        public event CustomEventHandler InnerEvent;
 
         private event CustomAsyncEventHandler InnerAsyncEvent;
 
