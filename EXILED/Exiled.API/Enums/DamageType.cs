@@ -254,10 +254,5 @@ namespace Exiled.API.Enums
         /// Damage caused by the marshmallow man.
         /// </summary>
         Marshmallow,
-
-        /// <summary>
-        /// Damage caused by <see cref="ItemType.SCP1344"/>.
-        /// </summary>
-        Scp1344,
     }
 }
