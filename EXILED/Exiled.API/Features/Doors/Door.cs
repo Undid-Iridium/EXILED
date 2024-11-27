@@ -608,7 +608,7 @@ namespace Exiled.API.Features.Doors
                         _ => DoorType.LightContainmentDoor,
                     },
                     "HCZ BreakableDoor" => DoorType.HeavyContainmentDoor,
-                    "HCZ BulkDoor" => DoorType.HeavyContainmentDoor,
+                    "HCZ BulkDoor" => DoorType.HeavyBulkDoor,
                     "EZ" => DoorType.EntranceDoor,
                     "Prison" => DoorType.PrisonDoor,
                     "914" => DoorType.Scp914Door,
