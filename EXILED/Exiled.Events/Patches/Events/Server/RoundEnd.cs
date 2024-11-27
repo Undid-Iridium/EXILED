@@ -40,6 +40,7 @@ namespace Exiled.Events.Patches.Events.Server
             {
                 Log.Warn($"What is the nexted type {nestedType}");
             }
+
             PrivateType = typeof(RoundSummary).GetNestedTypes(all)
                 .FirstOrDefault(currentType => currentType.Name.Contains("_ProcessServerSideCode"));
             if (PrivateType == null)
@@ -77,9 +78,9 @@ namespace Exiled.Events.Patches.Events.Server
 
             offset = 4;
             index = newInstructions.FindIndex(x => x.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.GetTeam), new Type[] { typeof(ReferenceHub), }))) + offset;
-            
+
             newInstructions[index].labels.Add(jmp);
-            
+
             // Replace Network_extraTargets == 0 with Network_extraTargets <= 0 // TODO VERIFY THAN this still exist
                 // offset = 1;
                 // index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(RoundSummary), nameof(RoundSummary.Network_extraTargets)))) + offset;
@@ -96,10 +97,8 @@ namespace Exiled.Events.Patches.Events.Server
             //
             // offset = -1;
             // index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
-
-            
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
-            
+
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -107,38 +106,38 @@ namespace Exiled.Events.Patches.Events.Server
                     // this.leadingTeam
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(PrivateType, LeadingTeam)),
-            
+
                     // this.newList
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, NewList)),
-            
+
                     // shouldRoundEnd
                     new(OpCodes.Ldloc_S, 4),
-            
+
                     // isForceEnd
                     new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
-            
+
                     // EndingRoundEventArgs evEndingRound = new(RoundSummary.LeadingTeam, RoundSummary.SumInfo_ClassList, bool, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EndingRoundEventArgs))[0]),
                     new(OpCodes.Dup),
-            
+
                     // Handlers.Server.OnEndingRound(evEndingRound);
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnEndingRound))),
                     new(OpCodes.Stloc_S, evEndingRound.LocalIndex),
-            
+
                     // this.leadingTeam = ev.LeadingTeam
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.LeadingTeam))),
                     new(OpCodes.Stfld, Field(PrivateType, LeadingTeam)),
-            
+
                     // this._roundEnded = ev.IsForceEnded
                     new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsForceEnded))),
                     new(OpCodes.Stfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
-            
+
                     // flag = ev.IsAllowed
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
@@ -154,12 +153,12 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Ldfld, Field(PrivateType, NewList)),
                 new(OpCodes.Call, PropertySetter(typeof(Round), nameof(Round.LastClassList))),
             });
-            
+
             Label skip = generator.DefineLabel();
-            
+
             offset = 7;
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldstr && x.operand == (object)"auto_round_restart_time") + offset;
-            
+
             LocalBuilder timeToRestartIndex = (LocalBuilder)newInstructions[index - 1].operand;
             newInstructions.InsertRange(
                 index,
@@ -168,26 +167,26 @@ namespace Exiled.Events.Patches.Events.Server
                     // this.leadingTeam
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, LeadingTeam)),
-            
+
                     // this.newList
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, NewList)),
-            
+
                     // timeToRestart
                     new(OpCodes.Ldloc_S, timeToRestartIndex),
-            
+
                     // RoundEndedEventArgs evEndedRound = new(RoundSummary.LeadingTeam, RoundSummary.SumInfo_ClassList, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoundEndedEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-            
+
                     // Handlers.Server.OnRoundEnded(evEndedRound);
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnRoundEnded))),
-            
+
                     // timeToRestart = ev.TimeToRestart
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RoundEndedEventArgs), nameof(RoundEndedEventArgs.TimeToRestart))),
                     new(OpCodes.Stloc_S, timeToRestartIndex),
-            
+
                     // if (!ShowRoundSummary) goto skip;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RoundEndedEventArgs), nameof(RoundEndedEventArgs.ShowRoundSummary))),
                     new(OpCodes.Brfalse_S, skip),
