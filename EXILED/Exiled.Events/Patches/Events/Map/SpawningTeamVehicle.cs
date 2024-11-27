@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Events.Map
                 // if (type != RespawnEffectsController.EffectType.Selection)
                 //    goto continueLabel;
                 new(OpCodes.Ldloc_S, msg.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(WaveUpdateMessage), nameof(WaveUpdateMessage.IsTrigger))),
+                new(OpCodes.Callvirt, Property(typeof(WaveUpdateMessage), nameof(WaveUpdateMessage.IsTrigger))),
                 new(OpCodes.Brfalse_S, continueLabel),
 
                 // team
