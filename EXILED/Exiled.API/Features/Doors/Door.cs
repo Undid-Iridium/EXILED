@@ -589,17 +589,18 @@ namespace Exiled.API.Features.Doors
             if (Nametag is null)
             {
                 string doorName = GameObject.name.GetBefore(' ');
+
                 // Log.Error($"What is door type {doorName} versus {GameObject.name}");
-                //Temp, Exiled should not be using a space identifier but I am on vacation
+                // Temp, Exiled should not be using a space identifier but I am on vacation
                 if (doorName.Equals("HCZ"))
                 {
                     doorName = GameObject.name.GetBefore('(');
                 }
+
                 // Log.Error($"What is door type {doorName} versus {GameObject.name}");
                 // Correct behavior would be to just cut (clone) off the end
                 // If you want, have two item definitions - 1 - HCZ doors group
                 // 2 - HCZ specific door (HCZ - Breakable, Blastdoor, etc)
-
                 return doorName switch
                 {
                     "LCZ" => Room?.Type switch
