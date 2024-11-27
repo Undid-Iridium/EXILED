@@ -119,12 +119,12 @@ namespace Exiled.API.Extensions
         /// <returns>Name without brackets.</returns>
         public static string RemoveBracketsOnEndOfName(this string name)
         {
-            int bracketStart = name.IndexOf('(') - 1;
+            // int bracketStart = name.IndexOf('(') - 1;
+            //
+            // if (bracketStart > 0)
+            //     name = name.Remove(bracketStart, name.Length - bracketStart);
 
-            if (bracketStart > 0)
-                name = name.Remove(bracketStart, name.Length - bracketStart);
-
-            return name;
+            return name.Replace("(Clone)", "");
         }
 
         /// <summary>

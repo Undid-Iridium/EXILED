@@ -495,13 +495,13 @@ namespace Exiled.API.Features
 
             Zone = FindZone(gameObject);
 #if DEBUG
-            if (Type is RoomType.Unknown)
-                Log.Error($"[ZONETYPE UNKNOWN] {this}");
+            if (Zone is ZoneType.Other)
+                Log.Error($"[ZONETYPE UNKNOWN] {this} {gameObject.transform.parent?.name} versus {gameObject.transform.parent?.name.RemoveBracketsOnEndOfName()}");
 #endif
             Type = FindType(gameObject);
 #if DEBUG
             if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this}");
+                Log.Error($"[ROOMTYPE UNKNOWN] {this} {gameObject.name} versus {gameObject?.name.RemoveBracketsOnEndOfName()}");
 #endif
 
             RoomLightControllersValue.AddRange(gameObject.GetComponentsInChildren<RoomLightController>());
