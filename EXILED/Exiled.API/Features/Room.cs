@@ -501,7 +501,7 @@ namespace Exiled.API.Features
             Type = FindType(gameObject);
 #if DEBUG
             if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this} {gameObject.name} versus {gameObject?.name.RemoveBracketsOnEndOfName()}");
+                Log.Error($"[ROOMTYPE UNKNOWN] {this} {gameObject.name} versus {gameObject.name.RemoveBracketsOnEndOfName()}");
 #endif
 
             RoomLightControllersValue.AddRange(gameObject.GetComponentsInChildren<RoomLightController>());
