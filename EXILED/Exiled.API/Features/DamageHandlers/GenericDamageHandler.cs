@@ -91,7 +91,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new UniversalDamageHandler(damage, DeathTranslations.SeveredHands, cassieAnnouncement);
                     break;
                 case DamageType.SeveredEyes:
-                    Base = new UniversalDamageHandler(damage, DeathTranslations.SeveredHands, cassieAnnouncement);
+                    Base = new UniversalDamageHandler(damage, DeathTranslations.Scp1344, cassieAnnouncement);
                     break;
                 case DamageType.Warhead:
                     Base = new WarheadDamageHandler();
