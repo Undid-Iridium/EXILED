@@ -36,11 +36,6 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static MethodInfo TargetMethod()
         {
-            foreach (Type nestedType in typeof(RoundSummary).GetNestedTypes(all))
-            {
-                Log.Warn($"What is the nexted type {nestedType}");
-            }
-
             PrivateType = typeof(RoundSummary).GetNestedTypes(all)
                 .FirstOrDefault(currentType => currentType.Name.Contains("_ProcessServerSideCode"));
             if (PrivateType == null)
