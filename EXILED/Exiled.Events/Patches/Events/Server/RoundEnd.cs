@@ -13,6 +13,7 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Server;
@@ -76,22 +77,8 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions[index].labels.Add(jmp);
 
-            // Replace Network_extraTargets == 0 with Network_extraTargets <= 0 // TODO VERIFY THAN this still exist
-                // offset = 1;
-                // index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(RoundSummary), nameof(RoundSummary.Network_extraTargets)))) + offset;
-                // Label label = (Label)newInstructions[index].operand;
-                // newInstructions.RemoveAt(index);
-            //
-            // newInstructions.InsertRange(
-            //     index,
-            //     new CodeInstruction[]
-            //     {
-            //         new(OpCodes.Ldc_I4_0),
-            //         new(OpCodes.Bgt_S, label),
-            //     });
-            //
-            // offset = -1;
-            // index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
+            offset = -1;
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(
