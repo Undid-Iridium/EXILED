@@ -96,32 +96,32 @@ namespace Exiled.Events.Patches.Generic
             {
                 if (attackerFootprint.Hub == victimHub)
                 {
-                    Log.Info("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide in Server.FriendlyFire");
+                    Log.Debug("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide in Server.FriendlyFire");
                     return instance?.AllowSelfDamage ?? true;
                 }
 
-                Log.Info($"Server friendly fire was on for IndividualFriendlyFire, returning IsDamageable answer");
+                Log.Debug($"Server friendly fire was on for IndividualFriendlyFire, returning IsDamageable answer");
                 return HitboxIdentity.IsDamageable(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
             }
 
             // Always allow damage from Server.Host
             if (attackerFootprint.Hub == Server.Host.ReferenceHub)
             {
-                Log.Info($"Host was equal to attacker, returning true IndividualFriendlyFire");
+                Log.Debug($"Host was equal to attacker, returning true IndividualFriendlyFire");
                 return true;
             }
 
             // Only check friendlyFire if the FootPrint hasn't changed (Fix for Grenade not dealing damage because it's from a dead player)
             if (!attackerFootprint.CompareLife(new Footprint(attackerFootprint.Hub)))
             {
-                Log.Info($"Compare life was called, returning false IndividualFriendlyFire");
+                Log.Debug($"Compare life was called, returning false IndividualFriendlyFire");
                 return false;
             }
 
             // Check if attackerFootprint.Hub or victimHub is null and log debug information
             if (attackerFootprint.Hub is null || victimHub is null)
             {
-                Log.Info($"CheckFriendlyFirePlayerRules, Attacker hub null: {attackerFootprint.Hub is null}, Victim hub null: {victimHub is null}");
+                Log.Debug($"CheckFriendlyFirePlayerRules, Attacker hub null: {attackerFootprint.Hub is null}, Victim hub null: {victimHub is null}");
                 return true;
             }
 
@@ -132,17 +132,17 @@ namespace Exiled.Events.Patches.Generic
 
                 if (attacker is null || victim is null)
                 {
-                    Log.Info($"CheckFriendlyFirePlayerRules, Attacker null: {attacker is null}, Victim null: {victim is null}");
+                    Log.Debug($"CheckFriendlyFirePlayerRules, Attacker null: {attacker is null}, Victim null: {victim is null}");
                     return true;
                 }
 
                 if (attacker == victim)
                 {
-                    Log.Info("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide");
+                    Log.Debug("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide");
                     return instance?.AllowSelfDamage ?? true;
                 }
 
-                Log.Info($"CheckFriendlyFirePlayerRules, Attacker role {attacker.Role} and Victim {victim.Role}");
+                Log.Debug($"CheckFriendlyFirePlayerRules, Attacker role {attacker.Role} and Victim {victim.Role}");
 
                 // Check victim's UniqueRole for custom FF multiplier
                 if (!string.IsNullOrEmpty(victim.UniqueRole) &&
