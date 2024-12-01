@@ -78,21 +78,6 @@ namespace Exiled.Events.Patches.Generic
         /// <remarks>Use <see cref="CheckFriendlyFirePlayerRules(Footprint, ReferenceHub, out float, AttackerDamageHandler)"/> instead of this if the damage is not done instantly.</remarks>
         public static bool CheckFriendlyFirePlayerRules(ReferenceHub attackerHub, ReferenceHub victimHub, out float ffMultiplier, AttackerDamageHandler instance) => CheckFriendlyFirePlayerRules(new Footprint(attackerHub), victimHub, out ffMultiplier, instance);
 
-        // public static void checkingSomething(ReferenceHub ply, AttackerDamageHandler instance)
-        // {
-        //     Log.Debug($"What the hell is the net id's {ply.networkIdentity.netId } -- {instance.Attacker.NetId}");;
-        //     Log.Debug($"!instance.AllowSelfDamage && !instance.ForceFullFriendlyFire {!instance.AllowSelfDamage } -- { !instance.ForceFullFriendlyFire}");;
-        //     if (ply.networkIdentity.netId == instance.Attacker.NetId || instance.ForceFullFriendlyFire)
-        //     {
-        //         if (!instance.AllowSelfDamage && !instance.ForceFullFriendlyFire)
-        //         {
-        //             instance.Damage = 0f;
-        //             return;
-        //         }
-        //         instance.IsSuicide = true;
-        //     }
-        // }
-
         /// <summary>
         /// Checks if there can be damage between two players, according to the FF rules.
         /// </summary>
@@ -148,8 +133,6 @@ namespace Exiled.Events.Patches.Generic
                 if (attacker == victim)
                 {
                     Log.Debug("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide");
-                    Log.Debug($"{attacker.NetworkIdentity.netId}--{attacker.NetworkIdentity.netId == victim.NetId}--{victim.NetId}");
-                    Log.Debug($"{attackerFootprint.NetId}--{attackerFootprint.NetId == victimHub.networkIdentity.netId}--{victimHub.networkIdentity.netId}");
                     return instance?.AllowSelfDamage ?? true;
                 }
 
